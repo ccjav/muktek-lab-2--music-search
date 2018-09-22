@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import "./Header.css";
 import Logo from "../Logo";
-// import { PLAYLIST_ID } from "../../constants";
+import { PLAYLIST_ID } from "../../constants";
 
 export default class Header extends Component {
   render() {
@@ -12,8 +13,7 @@ export default class Header extends Component {
           <a className="mr-2" href="/">
             <Logo />
           </a>
-
-          {/* <a href={`/playlists/${PLAYLIST_ID}`}>My Playlist</a> */}
+          <Link to={`/playlists/${PLAYLIST_ID}`}>My playlist</Link>
         </div>
       </div>
     );

@@ -1,30 +1,58 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
-const artists = [
-  {
-    id: "83d91898-7763-47d7-b03b-b92132375c47",
-    name: "Pink Floyd",
-    imageUrl:
-      "https://lastfm-img2.akamaized.net/i/u/300x300/98d2ca11cd6642519d750f4b82fbec2c.png"
-  },
-  {
-    id: "8bfac288-ccc5-448d-9573-c33ea2aa5c30",
-    name: "Red Hot Chili Peppers",
-    imageUrl:
-      "https://lastfm-img2.akamaized.net/i/u/300x300/ff9c5cb557a7489f8ef032b993638d18.png"
-  }
-];
+import SearchBar from "../../components/SearchBar";
 
 export default class Home extends Component {
+  state = {
+    searching: false,
+    artists: null,
+    error: null
+  };
+
+  handleCreateQuery = query => {
+    this.setState({
+      searching: true,
+      error: null
+    });
+
+    fetch(`https://react-api-lab.herokuapp.com/search?query=${query}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          searching: false,
+          artists: data
+        });
+      })
+      .catch(error => {
+        this.setState({
+          searching: false,
+          error: error
+        });
+      });
+  };
+
   render() {
+    const { searching, artists } = this.state;
+
     return (
-      <ul>
-        {artists.map(artist => (
-          <li key={artist.key}>
-            <a href={`/artists/${artist.id}`}>{artist.name}</a>
-          </li>
-        ))}
-      </ul>
+      <React.Fragment>
+        <SearchBar onCreateQuery={this.handleCreateQuery} />
+        {!searching &&
+          artists && (
+            <ul>
+              {artists.data.map(artist => (
+                <li key={artist.name}>
+                  <Link to={`/artists/${artist.id}`}>
+                    <img src={artist.imageUrl} alt="Artist" />
+                    {artist.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+      </React.Fragment>
     );
   }
 }
